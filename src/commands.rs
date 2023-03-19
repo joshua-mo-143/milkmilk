@@ -2,10 +2,7 @@ use clap::{Parser, Subcommand};
 
 use crate::backend::axum::Axum;
 use crate::docker::Dockerfile;
-use crate::frontend::{
-    css::{create_tailwindcss_files, setup_tailwind_config},
-    nextjs::create_nextjs_files,
-};
+use crate::frontend::nextjs::Nextjs;
 use crate::setup::Setup;
 use crate::utils::{run_command, PackageJson};
 
@@ -38,24 +35,7 @@ pub fn parse_commands() -> Result<(), String> {
         Cmd::Start => {
             let mut init_args = Setup::get_name();
 
-            SetupCmd::CreateNextApp.run(Some(&init_args.project_name), None);
-            SetupCmd::FrontendDeps.run(None, Some(&init_args.workdir));
-            SetupCmd::TailwindDeps.run(None, Some(&init_args.workdir));
-            SetupCmd::TailwindInit.run(None, Some(&init_args.workdir));
-            setup_tailwind_config(init_args.workdir.clone());
-
-            create_tailwindcss_files(init_args.workdir.clone())
-                .expect("Failed to make TailwindCSS files");
-            create_nextjs_files(init_args.workdir.clone()).expect("Failed to make NextJS files");
-
-            let mut packagejson_filepath = init_args.workdir.clone();
-
-            packagejson_filepath.push_str("/package.json");
-
-            PackageJson::from_json(&packagejson_filepath)
-                .add_data()
-                .write_to_file(&packagejson_filepath)
-                .expect("Failed to write to package.json");
+            Nextjs::bootstrap(init_args.clone());
 
             SetupCmd::CargoInit.run(Some("backend"), Some(&init_args.workdir));
 
