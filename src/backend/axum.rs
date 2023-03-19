@@ -1,3 +1,4 @@
+use crate::setup::DeployOn;
 use std::fs;
 use std::io;
 use std::io::Write;
@@ -6,7 +7,7 @@ use std::path::Path;
 pub struct Axum;
 
 impl Axum {
-    pub fn bootstrap(workdir: String) -> io::Result<()> {
+    pub fn bootstrap(workdir: String, deploy_on: DeployOn) -> io::Result<()> {
         let mut main = workdir.clone();
         main.push_str("/src/main.rs");
         let main = Path::new(&main);
@@ -17,7 +18,14 @@ impl Axum {
 
         let mut f = fs::File::create(main)?;
 
-        f.write_all(AXUM_MAIN_FILE.as_bytes())?;
+        match deploy_on {
+            DeployOn::DockerImage => {
+                f.write_all(AXUM_MAIN_FILE.as_bytes())?;
+            }
+            DeployOn::Shuttle => {
+                f.write_all(AXUM_MAIN_FILE_SHUTTLE.as_bytes())?;
+            }
+        };
 
         let mut f = fs::File::create(router)?;
 
@@ -55,6 +63,23 @@ async fn main() {
         .await
         .unwrap()
 }"#;
+
+const AXUM_MAIN_FILE_SHUTTLE: &str = r#"
+
+#[shuttle_runtime::main]
+async fn axum(
+#[shuttle_secrets::Postgres] postgres: PgPool,
+) -> shuttle_axum::ShuttleAxum {
+    sqlx::migrate!()
+        .run(&postgres)
+        .await
+        .expect("Migrations failed") :(");
+
+    let router = create_api_router(postgres);
+
+    router.into()
+}   
+"#;
 
 const AXUM_ROUTER_FILE: &str = r#"use axum::extract::{Path, State};
 use axum::{
