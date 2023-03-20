@@ -2,11 +2,11 @@
 name = "milkmilk"
 authors = ["Joshua Mo"]
 description = "Build fullstack websites that use a Rust backend quicker."
-keywords = ["command-line-utilities"]
-version = "0.0.1"
+keywords = ["cli", "web"]
+categories = ["command-line-utilities", "development-tools", "web-programming"]
+version = "0.1.0"
 edition = "2021"
 default-run="mkmk"
-license = "GNU GPL 3.0"
 license-file = "./LICENSE.md"
 documentation = ""
 homepage = "https://github.com/joshua-mo-143/milkmilk"
