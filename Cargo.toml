@@ -8,7 +8,7 @@ version = "0.1.0"
 edition = "2021"
 default-run="mkmk"
 license-file = "./LICENSE.md"
-documentation = ""
+documentation = "https://github.com/joshua-mo-143/milkmilk"
 homepage = "https://github.com/joshua-mo-143/milkmilk"
 repository = "https://github.com/joshua-mo-143/milkmilk"
 
