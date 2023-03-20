@@ -1,5 +1,4 @@
 use crate::setup::DeployOn;
-use std::fs;
 use std::io;
 
 use crate::utils::Utils;
@@ -17,11 +16,11 @@ impl Axum {
         match deploy_on {
             DeployOn::DockerImage => {
                 Utils::write_to_file(&router, AXUM_MAIN_FILE)
-            .expect("Failed to write the Axum main file :(");
+                    .expect("Failed to write the Axum main file :(");
             }
             DeployOn::Shuttle => {
                 Utils::write_to_file(&router, AXUM_MAIN_FILE_SHUTTLE)
-            .expect("Failed to write the Axum main file :(");
+                    .expect("Failed to write the Axum main file :(");
             }
         };
 

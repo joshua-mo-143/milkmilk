@@ -109,7 +109,7 @@ impl SetupCmd {
 
             SetupCmd::CargoAdd => "cargo add tokio axum serde dotenvy sqlx --features serde/derive,sqlx/runtime-tokio-rustls,sqlx/postgres,tokio/macros".into(),
             SetupCmd::CargoAddShuttle => "cargo add shuttle_runtime shuttle_axum shuttle_secrets tokio axum serde sqlx --features 
-            serde/derive,sqlx/runtime-tokio-native-tls,sqlx/postgres,shuttle-secrets/postgres".into()
+            serde/derive,sqlx/runtime-tokio-native-tls,sqlx/postgres".into()
         };
 
         println!("Trying to run {cmd}");
