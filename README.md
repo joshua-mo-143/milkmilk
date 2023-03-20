@@ -20,12 +20,12 @@ Simply install milkmilk with this command:
 
 Now all you have to do is use milkmilk like so!
 ```
-  cargo mkmk start
+  mkmk start
 ```
 
 Do you only need a backend? You can also do that:
 ```
-  cargo mkmk backend
+  mkmk backend
 ```
 
 Once you're done, you will probably want to do the following things before anything else:
@@ -39,12 +39,12 @@ Then you can get started! It's as easy as that. The default database URL set in 
 ### Supported Deployments
 Currently the default command sets up a Dockerfile so that you can deploy to a Docker image. However, you can also bootstrap a [shuttle](https://www.shuttle.rs) app by simply adding the `--shuttle` flag like so:
 ```
-  cargo mkmk start --shuttle
+  mkmk start --shuttle
 ```
 
 You can also do this with backend-only starts:
 ```
-  cargo mkmk backend --shuttle
+  mkmk backend --shuttle
 ```
 ### Contact
 
