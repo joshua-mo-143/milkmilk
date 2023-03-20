@@ -6,14 +6,14 @@ keywords = ["cli", "web"]
 categories = ["command-line-utilities", "development-tools", "web-programming"]
 version = "0.1.0"
 edition = "2021"
-default-run="mkmk"
+default-run="cargo-mkmk"
 license-file = "./LICENSE.md"
 documentation = "https://github.com/joshua-mo-143/milkmilk"
 homepage = "https://github.com/joshua-mo-143/milkmilk"
 repository = "https://github.com/joshua-mo-143/milkmilk"
 
 [[bin]]
-name = "mkmk"
+name = "cargo-mkmk"
 path = "src/main.rs"
 edition = "2021"
 
