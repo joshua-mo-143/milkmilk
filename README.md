@@ -9,7 +9,7 @@ Currently, only Next.js is supported due to being able to provide easy SSR. Othe
 Axum is the only Rust web framework supported at the moment, but more may be added depending on demand/.
 
 ### Pre-requisites
-You'll want Rust installed, as well as Node if you want to use a front end. You will also probably want Docker if you plan on deploying to a webservice that requires Docker image deployment.
+You'll want [Rust](https://www.rust-lang.org/tools/install) installed, as well as [Node](https://nodejs.org/en/download) if you want to use a front end. You will also probably want [Docker](https://docs.docker.com/get-docker/) if you plan on deploying to a webservice that requires Docker image deployment.
 
 
 ### Usage
