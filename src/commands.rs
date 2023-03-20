@@ -16,12 +16,19 @@ pub struct Cli {
 #[derive(Subcommand)]
 pub enum Cmd {
     /// Initiate a full-stack Next.js + Axum fullstack project complete with Dockerfile ready to deploy.
-    Start,
+    Start {
+        #[arg(short, long)]
+        /// Initiate your backend to
+        shuttle: bool,
+    },
     /// Make a dockerfile that you can use to deploy your Rust web services on.
     Dockerfile,
     /// Initiate a premade Axum backend project with basic CRUD routes.
-    Backend,
-    /// Get packagejson stuff
+    Backend {
+        #[arg(short, long)]
+        shuttle: bool,
+    },
+    /// Add scripts to your package.json to make it auto-build into your Rust backend
     Packagejson,
 }
 
@@ -32,8 +39,8 @@ pub fn parse_commands() -> Result<(), String> {
         Cmd::Dockerfile => {
             Dockerfile::generate_dockerfile(None);
         }
-        Cmd::Start => {
-            let mut init_args = Setup::get_name();
+        Cmd::Start { shuttle } => {
+            let mut init_args = Setup::get_name(shuttle);
 
             Nextjs::bootstrap(init_args.clone());
 
@@ -41,17 +48,21 @@ pub fn parse_commands() -> Result<(), String> {
 
             init_args.workdir.push_str("/backend");
 
-            SetupCmd::CargoAdd.run(None, Some(&init_args.workdir));
+            if shuttle {
+                SetupCmd::CargoAdd.run(None, Some(&init_args.workdir));
+            } else {
+                SetupCmd::CargoAddShuttle.run(None, Some(&init_args.workdir));
+            }
             Dockerfile::generate_ci_files(Some(&init_args.workdir));
-            Axum::bootstrap(init_args.workdir).expect("Failed to write files");
+            Axum::bootstrap(init_args.workdir, init_args.deploy_on).expect("Failed to write files");
         }
-        Cmd::Backend => {
-            let init_args = Setup::get_name();
+        Cmd::Backend { shuttle } => {
+            let init_args = Setup::get_name(shuttle);
 
             SetupCmd::CargoInit.run(Some(&init_args.project_name), None);
             SetupCmd::CargoAdd.run(None, Some(&init_args.workdir));
             Dockerfile::generate_ci_files(Some(&init_args.workdir));
-            Axum::bootstrap(init_args.workdir).expect("Failed to write files");
+            Axum::bootstrap(init_args.workdir, init_args.deploy_on).expect("Failed to write files");
         }
         Cmd::Packagejson => {
             let filepath = String::from("./package.json");
@@ -73,6 +84,7 @@ pub enum SetupCmd {
     TailwindInit,
     CargoInit,
     CargoAdd,
+    CargoAddShuttle,
 }
 
 impl SetupCmd {
@@ -96,6 +108,8 @@ impl SetupCmd {
             }
 
             SetupCmd::CargoAdd => "cargo add tokio axum serde dotenvy sqlx --features serde/derive,sqlx/runtime-tokio-rustls,sqlx/postgres,tokio/macros".into(),
+            SetupCmd::CargoAddShuttle => "cargo add shuttle_runtime shuttle_axum shuttle_secrets tokio axum serde sqlx --features 
+            serde/derive,sqlx/runtime-tokio-native-tls,sqlx/postgres,shuttle-secrets/postgres".into()
         };
 
         println!("Trying to run {cmd}");
