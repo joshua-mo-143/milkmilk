@@ -6,7 +6,7 @@ This crate will also automatically generate a base Dockerfile for you so that yo
 
 Currently, only Next.js is supported due to being able to provide easy SSR. Other front ends may get added on in the future.
 
-Axum is the only Rust web framework supported at the moment, but more may be added depending on.
+Axum is the only Rust web framework supported at the moment, but more may be added depending on demand/.
 
 ### Pre-requisites
 You'll want Rust installed, as well as Node if you want to use a front end. You will also probably want Docker if you plan on deploying to a webservice that requires Docker image deployment.
@@ -23,6 +23,11 @@ Now all you have to do is use milkmilk like so!
   cargo mkmk start
 ```
 
+Do you only need a backend? You can also do that:
+```
+  cargo mkmk backend
+```
+
 Once you're done, you will probably want to do the following things before anything else:
 
 * Set up your migrations (currently this app bootstraps with `SQLx` so you'll want to use [`sqlx-cli`](https://lib.rs/crates/sqlx-cli) to get started).
@@ -30,9 +35,17 @@ Once you're done, you will probably want to do the following things before anyth
 * Make sure everything else you need is in order, like Nginx or any other alternative forms of storage you might need.
 
 Then you can get started! It's as easy as that. The default database URL set in the .env will be a localhost Postgres database on default connection settings.
-  
-Currently no flag/values are supported, but this will probably change in future. 
 
+### Supported Deployments
+Currently the default command sets up a Dockerfile so that you can deploy to a Docker image. However, you can also bootstrap a [shuttle](https://www.shuttle.rs) app by simply adding the `--shuttle` flag like so:
+```
+  cargo mkmk start --shuttle
+```
+
+You can also do this with backend-only starts:
+```
+  cargo mkmk backend --shuttle
+```
 ### Contact
 
 You can find me at my [twitter](https://www.twitter.com/joshmo_dev).
