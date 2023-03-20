@@ -1,8 +1,8 @@
 use crate::setup::DeployOn;
 use std::fs;
 use std::io;
-use std::io::Write;
-use std::path::Path;
+
+use crate::utils::Utils;
 
 pub struct Axum;
 
@@ -10,26 +10,23 @@ impl Axum {
     pub fn bootstrap(workdir: String, deploy_on: DeployOn) -> io::Result<()> {
         let mut main = workdir.clone();
         main.push_str("/src/main.rs");
-        let main = Path::new(&main);
 
         let mut router = workdir;
         router.push_str("/src/router.rs");
-        let router = Path::new(&router);
-
-        let mut f = fs::File::create(main)?;
 
         match deploy_on {
             DeployOn::DockerImage => {
-                f.write_all(AXUM_MAIN_FILE.as_bytes())?;
+                Utils::write_to_file(&router, AXUM_MAIN_FILE)
+            .expect("Failed to write the Axum main file :(");
             }
             DeployOn::Shuttle => {
-                f.write_all(AXUM_MAIN_FILE_SHUTTLE.as_bytes())?;
+                Utils::write_to_file(&router, AXUM_MAIN_FILE_SHUTTLE)
+            .expect("Failed to write the Axum main file :(");
             }
         };
 
-        let mut f = fs::File::create(router)?;
-
-        f.write_all(AXUM_ROUTER_FILE.as_bytes())?;
+        Utils::write_to_file(&router, AXUM_ROUTER_FILE)
+            .expect("Failed to write the Axum router file :(");
 
         Ok(())
     }

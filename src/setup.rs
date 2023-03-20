@@ -26,6 +26,7 @@ impl Setup {
     }
 }
 
+#[derive(Clone)]
 pub struct InitArgs {
     pub project_name: String,
     pub workdir: String,

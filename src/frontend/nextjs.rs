@@ -1,21 +1,55 @@
 use std::fs;
-use std::io;
-use std::io::Write;
 
-pub fn create_nextjs_files(mut workdir: String) -> io::Result<()> {
-    let mut dir_to_delete = workdir.clone();
+use crate::commands::SetupCmd;
+use crate::frontend::css::TailwindCSS;
+use crate::setup::InitArgs;
+use crate::utils::{PackageJson, Utils};
 
-    dir_to_delete.push_str("/src/pages/api");
+pub struct Nextjs;
 
-    fs::remove_dir_all(&dir_to_delete).expect("Failed to delete the default Next.js API folder");
+impl Nextjs {
+    pub fn bootstrap(init_args: InitArgs) {
+        SetupCmd::CreateNextApp.run(Some(&init_args.project_name), None);
+        SetupCmd::FrontendDeps.run(None, Some(&init_args.workdir));
+        SetupCmd::TailwindDeps.run(None, Some(&init_args.workdir));
+        SetupCmd::TailwindInit.run(None, Some(&init_args.workdir));
+        TailwindCSS::setup_tailwind_config(init_args.workdir.clone());
 
-    workdir.push_str("/src/pages/index.tsx");
+        TailwindCSS::create_tailwindcss_files(init_args.workdir.clone())
+            .expect("Couldn't write TailwindCSS files!");
+        Nextjs::create_page_files(init_args.workdir.clone());
+        Nextjs::create_config_file(init_args.workdir.clone());
 
-    let mut f = fs::File::create(&workdir).expect("Failed to recreate the index file");
+        let mut packagejson_filepath = init_args.workdir;
 
-    f.write_all(NEXTJS_HOMEPAGE_FILE.as_bytes())?;
+        packagejson_filepath.push_str("/package.json");
 
-    Ok(())
+        PackageJson::from_json(&packagejson_filepath)
+            .add_data()
+            .write_to_file(&packagejson_filepath)
+            .expect("Failed to write to package.json");
+    }
+
+    pub fn create_page_files(mut workdir: String) {
+        let mut dir_to_delete = workdir.clone();
+
+        dir_to_delete.push_str("/src/pages/api");
+
+        fs::remove_dir_all(&dir_to_delete)
+            .expect("Failed to delete the default Next.js API folder");
+
+        workdir.push_str("/src/pages/index.tsx");
+
+        Utils::write_to_file(&workdir, NEXTJS_HOMEPAGE_FILE)
+            .expect("Couldn't write Nextjs homepage file :(");
+    }
+
+    pub fn create_config_file(mut workdir: String) {
+        workdir.push_str("/next.config.js");
+
+        Utils::write_to_file(&workdir, NEXTJS_CONFIG_FILE)
+            .expect("Couldn't write Nextjs config file :(");
+    }
 }
 
 const NEXTJS_HOMEPAGE_FILE: &str = r#"import Head from 'next/head'
@@ -53,3 +87,12 @@ export default function Home() {
     </>
   )
 }"#;
+
+const NEXTJS_CONFIG_FILE: &str = r#"/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  trailingSlash: true,
+}
+
+module.exports = nextConfig
+"#;

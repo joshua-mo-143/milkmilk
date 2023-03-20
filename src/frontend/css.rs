@@ -1,30 +1,31 @@
 use std::fs;
 use std::io;
-use std::io::Write;
 
-pub fn create_tailwindcss_files(mut workdir: String) -> io::Result<()> {
-    workdir.push_str("/src/styles/");
+use crate::utils::Utils;
 
-    fs::remove_dir_all(&workdir)?;
-    fs::create_dir(&workdir)?;
+pub struct TailwindCSS;
 
-    workdir.push_str("/globals.css");
+impl TailwindCSS {
+    pub fn create_tailwindcss_files(mut workdir: String) -> io::Result<()> {
+        workdir.push_str("/src/styles/");
 
-    let mut f = fs::File::create(&workdir).expect("Failed to remake the global CSS file.");
+        fs::remove_dir_all(&workdir)?;
+        fs::create_dir(&workdir)?;
 
-    f.write_all(TAILWINDCSS_CSS_FILE.as_bytes())
-        .expect("Failed to fill the tailwindCSS file with text.");
+        workdir.push_str("/globals.css");
 
-    Ok(())
-}
+        Utils::write_to_file(&workdir, TAILWINDCSS_CSS_FILE)
+            .expect("Failed to write TailwindCSS CSS file.");
 
-pub fn setup_tailwind_config(mut workdir: String) {
-    workdir.push_str("/tailwind.config.js");
+        Ok(())
+    }
 
-    let mut f = fs::File::create(&workdir).expect("Failed to recreate the Tailwind config file");
+    pub fn setup_tailwind_config(mut workdir: String) {
+        workdir.push_str("/tailwind.config.js");
 
-    f.write_all(TAILWINDCSS_CONFIG_FILE.as_bytes())
-        .expect("Failed to fill the tailwind config file :(");
+        Utils::write_to_file(&workdir, TAILWINDCSS_CONFIG_FILE)
+            .expect("Failed to write TailwindCSS config file.");
+    }
 }
 
 const TAILWINDCSS_CSS_FILE: &str = r#"@tailwind base;
