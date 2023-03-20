@@ -1,6 +1,7 @@
 use std::fs;
 use std::io;
-use std::io::Write;
+
+use crate::utils::Utils;
 
 pub struct TailwindCSS;
 
@@ -13,23 +14,16 @@ impl TailwindCSS {
 
         workdir.push_str("/globals.css");
 
-        let mut f = fs::File::create(&workdir).expect("Failed to remake the global CSS file.");
-
-        f.write_all(TAILWINDCSS_CSS_FILE.as_bytes())
-            .expect("Failed to fill the tailwindCSS file with text.");
+        Utils::write_to_file(&workdir, TAILWINDCSS_CSS_FILE).expect("Failed to write TailwindCSS CSS file.");
 
         Ok(())
-    }
+            }
 
     pub fn setup_tailwind_config(mut workdir: String) {
         workdir.push_str("/tailwind.config.js");
 
-        let mut f =
-            fs::File::create(&workdir).expect("Failed to recreate the Tailwind config file");
-
-        f.write_all(TAILWINDCSS_CONFIG_FILE.as_bytes())
-            .expect("Failed to fill the tailwind config file :(");
-    }
+        Utils::write_to_file(&workdir, TAILWINDCSS_CONFIG_FILE).expect("Failed to write TailwindCSS config file.");
+            }
 }
 
 const TAILWINDCSS_CSS_FILE: &str = r#"@tailwind base;

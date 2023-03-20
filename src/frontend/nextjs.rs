@@ -1,11 +1,9 @@
 use std::fs;
-use std::io;
-use std::io::Write;
 
 use crate::commands::SetupCmd;
 use crate::frontend::css::TailwindCSS;
 use crate::setup::InitArgs;
-use crate::utils::PackageJson;
+use crate::utils::{PackageJson, Utils};
 
 pub struct Nextjs;
 
@@ -17,11 +15,9 @@ impl Nextjs {
         SetupCmd::TailwindInit.run(None, Some(&init_args.workdir));
         TailwindCSS::setup_tailwind_config(init_args.workdir.clone());
 
-        TailwindCSS::create_tailwindcss_files(init_args.workdir.clone())
-            .expect("Failed to make TailwindCSS files");
-        Nextjs::create_page_files(init_args.workdir.clone()).expect("Failed to make NextJS files");
-        Nextjs::create_config_file(init_args.workdir.clone())
-            .expect("Failed to set up the nextjs config file");
+        TailwindCSS::create_tailwindcss_files(init_args.workdir.clone()).expect("Couldn't write TailwindCSS files!");
+        Nextjs::create_page_files(init_args.workdir.clone());
+                Nextjs::create_config_file(init_args.workdir.clone());
 
         let mut packagejson_filepath = init_args.workdir;
 
@@ -33,7 +29,7 @@ impl Nextjs {
             .expect("Failed to write to package.json");
     }
 
-    pub fn create_page_files(mut workdir: String) -> io::Result<()> {
+    pub fn create_page_files(mut workdir: String) {
         let mut dir_to_delete = workdir.clone();
 
         dir_to_delete.push_str("/src/pages/api");
@@ -43,22 +39,14 @@ impl Nextjs {
 
         workdir.push_str("/src/pages/index.tsx");
 
-        let mut f = fs::File::create(&workdir).expect("Failed to recreate the index file");
+        Utils::write_to_file(&workdir, NEXTJS_HOMEPAGE_FILE).expect("Couldn't write Nextjs homepage file :(");
+                    }
 
-        f.write_all(NEXTJS_HOMEPAGE_FILE.as_bytes())?;
-
-        Ok(())
-    }
-
-    pub fn create_config_file(mut workdir: String) -> io::Result<()> {
+    pub fn create_config_file(mut workdir: String) {
         workdir.push_str("/next.config.js");
 
-        let mut f = fs::File::create(&workdir).expect("Couldn't remake the next.config.js file :(");
-
-        f.write_all(NEXTJS_CONFIG_FILE.as_bytes())?;
-
-        Ok(())
-    }
+        Utils::write_to_file(&workdir, NEXTJS_CONFIG_FILE).expect("Couldn't write Nextjs config file :(");
+            }
 }
 
 const NEXTJS_HOMEPAGE_FILE: &str = r#"import Head from 'next/head'
