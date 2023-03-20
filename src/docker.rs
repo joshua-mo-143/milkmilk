@@ -1,6 +1,6 @@
 use std::fs;
-use std::io::Write;
-use std::path::PathBuf;
+
+use crate::utils::Utils;
 
 pub struct Dockerfile;
 
@@ -12,7 +12,7 @@ pub enum Filetype {
 }
 
 impl Filetype {
-    pub fn generate_filepath(&self, mut workdir: Option<&str>) -> PathBuf {
+    pub fn generate_filepath(&self, mut workdir: Option<&str>) -> String {
         if workdir.is_none() {
             workdir = Some(r#"."#);
         }
@@ -26,7 +26,7 @@ impl Filetype {
             Filetype::Env => workdir.push_str("/.env"),
         }
 
-        PathBuf::from(workdir)
+        workdir
     }
 }
 
@@ -41,18 +41,8 @@ impl Dockerfile {
     pub fn generate_dockerfile(workdir: Option<&str>) {
         let workdir = Filetype::Dockerfile.generate_filepath(workdir);
 
-        let mut f = fs::File::create(&workdir).expect("Had an error trying to create a file :(");
-
-        let str = r#"FROM rust:latest
-
-WORKDIR /joshuamo/<your-app-here>
-COPY . .
-RUN cargo install --path .
-EXPOSE 8000
-CMD [<your-app-here>]"#;
-
-        f.write_all(str.as_bytes())
-            .expect("Had a problem writing to file :(");
+        Utils::write_to_file(&workdir, BASE_DOCKER_IMAGE)
+            .expect("Failed to write the base Docker image :(");
 
         println!("Dockerfile written");
     }
@@ -60,7 +50,7 @@ CMD [<your-app-here>]"#;
     pub fn generate_dockerignore(workdir: Option<&str>) {
         let workdir = Filetype::Dockerignore.generate_filepath(workdir);
 
-        fs::File::create(workdir).expect("Had an error trying to create a file :(");
+        fs::File::create(&workdir).expect("Had an error trying to create a file :(");
 
         println!(".dockerignore file written");
     }
@@ -68,14 +58,7 @@ CMD [<your-app-here>]"#;
     pub fn generate_gitignore(workdir: Option<&str>) {
         let workdir = Filetype::Gitignore.generate_filepath(workdir);
 
-        let mut f = fs::File::create(workdir).expect("Had an error trying to create a file :(");
-
-        let str = r#".env
-/target
-"#;
-
-        f.write_all(str.as_bytes())
-            .expect("Had a problem writing to file :(");
+        Utils::write_to_file(&workdir, GITIGNORE_FILE).expect("Failed to write gitignore :(");
 
         println!(".gitignore file written");
     }
@@ -83,13 +66,22 @@ CMD [<your-app-here>]"#;
     pub fn generate_env(workdir: Option<&str>) {
         let workdir = Filetype::Env.generate_filepath(workdir);
 
-        let mut f = fs::File::create(workdir).expect("Had an error trying to create a file :(");
-
-        let str = r#"DATABASE_URL="postgres://postgres:postgres@localhost:5432/postgres""#;
-
-        f.write_all(str.as_bytes())
-            .expect("Had a problem writing to file :(");
+        Utils::write_to_file(&workdir, ENV_FILE).expect("Failed to write git file :(");
 
         println!(".env file written");
     }
 }
+
+const BASE_DOCKER_IMAGE: &str = r#"FROM rust:latest
+
+WORKDIR /joshuamo/<your-app-here>
+COPY . .
+RUN cargo install --path .
+EXPOSE 8000
+CMD [<your-app-here>]"#;
+
+const GITIGNORE_FILE: &str = r#".env
+/target
+"#;
+
+const ENV_FILE: &str = r#"DATABASE_URL="postgres://postgres:postgres@localhost:5432/postgres""#;

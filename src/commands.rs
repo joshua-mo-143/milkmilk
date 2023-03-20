@@ -4,7 +4,7 @@ use crate::backend::axum::Axum;
 use crate::docker::Dockerfile;
 use crate::frontend::nextjs::Nextjs;
 use crate::setup::Setup;
-use crate::utils::{run_command, PackageJson};
+use crate::utils::{PackageJson, Utils};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -100,6 +100,6 @@ impl SetupCmd {
 
         println!("Trying to run {cmd}");
 
-        run_command(cmd, workdir).expect("Looks like bootstrapping has broken :(");
+        Utils::run_command(cmd, workdir).expect("Looks like bootstrapping has broken :(");
     }
 }
