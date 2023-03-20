@@ -33,6 +33,7 @@ pub struct InitArgs {
     pub deploy_on: DeployOn,
 }
 
+#[derive(Clone)]
 pub enum DeployOn {
     DockerImage,
     Shuttle,
