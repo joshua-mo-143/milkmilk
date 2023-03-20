@@ -1,14 +1,21 @@
 [package]
 name = "milkmilk"
+authors = ["Joshua Mo"]
+description = "Build fullstack websites that use a Rust backend quicker."
+keywords = ["command-line-utilities"]
 version = "0.0.1"
 edition = "2021"
 default-run="mkmk"
+license = "GNU GPL 3.0"
+license-file = "./LICENSE.md"
+documentation = ""
+homepage = "https://github.com/joshua-mo-143/milkmilk"
+repository = "https://github.com/joshua-mo-143/milkmilk"
 
 [[bin]]
 name = "mkmk"
 path = "src/main.rs"
 edition = "2021"
-
 
 [dependencies]
 clap = { version = "4.1.8", features = ["derive"] }
