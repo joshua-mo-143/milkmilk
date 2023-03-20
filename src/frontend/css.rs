@@ -14,16 +14,18 @@ impl TailwindCSS {
 
         workdir.push_str("/globals.css");
 
-        Utils::write_to_file(&workdir, TAILWINDCSS_CSS_FILE).expect("Failed to write TailwindCSS CSS file.");
+        Utils::write_to_file(&workdir, TAILWINDCSS_CSS_FILE)
+            .expect("Failed to write TailwindCSS CSS file.");
 
         Ok(())
-            }
+    }
 
     pub fn setup_tailwind_config(mut workdir: String) {
         workdir.push_str("/tailwind.config.js");
 
-        Utils::write_to_file(&workdir, TAILWINDCSS_CONFIG_FILE).expect("Failed to write TailwindCSS config file.");
-            }
+        Utils::write_to_file(&workdir, TAILWINDCSS_CONFIG_FILE)
+            .expect("Failed to write TailwindCSS config file.");
+    }
 }
 
 const TAILWINDCSS_CSS_FILE: &str = r#"@tailwind base;

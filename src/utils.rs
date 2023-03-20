@@ -8,35 +8,34 @@ use std::process::{Command, ExitStatus};
 pub struct Utils;
 
 impl Utils {
-pub fn run_command(cmd: String, workdir: Option<&str>) -> Result<ExitStatus, String> {
-    let mut cmd = cmd.split_whitespace();
+    pub fn run_command(cmd: String, workdir: Option<&str>) -> Result<ExitStatus, String> {
+        let mut cmd = cmd.split_whitespace();
 
-    let first_part = cmd.next().unwrap();
+        let first_part = cmd.next().unwrap();
 
-    let cmd = match workdir {
-        Some(workdir) => Command::new(first_part)
-            .args(cmd.collect::<Vec<&str>>())
-            .current_dir(workdir)
-            .status(),
-        None => Command::new(first_part)
-            .args(cmd.collect::<Vec<&str>>())
-            .status(),
-    };
+        let cmd = match workdir {
+            Some(workdir) => Command::new(first_part)
+                .args(cmd.collect::<Vec<&str>>())
+                .current_dir(workdir)
+                .status(),
+            None => Command::new(first_part)
+                .args(cmd.collect::<Vec<&str>>())
+                .status(),
+        };
 
-    match cmd {
-        Ok(res) => Ok(res),
-        Err(err) => Err(format!("Error: {err}")),
+        match cmd {
+            Ok(res) => Ok(res),
+            Err(err) => Err(format!("Error: {err}")),
+        }
     }
-}
 
-pub fn write_to_file(workdir: &str, text: &str) -> io::Result<()> {
+    pub fn write_to_file(workdir: &str, text: &str) -> io::Result<()> {
         let mut f = fs::File::create(workdir)?;
 
         f.write_all(text.as_bytes())?;
 
         Ok(())
     }
-
 }
 
 #[allow(non_snake_case)]

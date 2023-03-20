@@ -15,9 +15,10 @@ impl Nextjs {
         SetupCmd::TailwindInit.run(None, Some(&init_args.workdir));
         TailwindCSS::setup_tailwind_config(init_args.workdir.clone());
 
-        TailwindCSS::create_tailwindcss_files(init_args.workdir.clone()).expect("Couldn't write TailwindCSS files!");
+        TailwindCSS::create_tailwindcss_files(init_args.workdir.clone())
+            .expect("Couldn't write TailwindCSS files!");
         Nextjs::create_page_files(init_args.workdir.clone());
-                Nextjs::create_config_file(init_args.workdir.clone());
+        Nextjs::create_config_file(init_args.workdir.clone());
 
         let mut packagejson_filepath = init_args.workdir;
 
@@ -39,14 +40,16 @@ impl Nextjs {
 
         workdir.push_str("/src/pages/index.tsx");
 
-        Utils::write_to_file(&workdir, NEXTJS_HOMEPAGE_FILE).expect("Couldn't write Nextjs homepage file :(");
-                    }
+        Utils::write_to_file(&workdir, NEXTJS_HOMEPAGE_FILE)
+            .expect("Couldn't write Nextjs homepage file :(");
+    }
 
     pub fn create_config_file(mut workdir: String) {
         workdir.push_str("/next.config.js");
 
-        Utils::write_to_file(&workdir, NEXTJS_CONFIG_FILE).expect("Couldn't write Nextjs config file :(");
-            }
+        Utils::write_to_file(&workdir, NEXTJS_CONFIG_FILE)
+            .expect("Couldn't write Nextjs config file :(");
+    }
 }
 
 const NEXTJS_HOMEPAGE_FILE: &str = r#"import Head from 'next/head'

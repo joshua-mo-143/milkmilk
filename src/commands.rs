@@ -4,7 +4,7 @@ use crate::backend::axum::Axum;
 use crate::docker::Dockerfile;
 use crate::frontend::nextjs::Nextjs;
 use crate::setup::Setup;
-use crate::utils::{Utils, PackageJson};
+use crate::utils::{PackageJson, Utils};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
