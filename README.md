@@ -13,12 +13,15 @@ You'll want Rust installed, as well as Node if you want to use a front end. You 
 
 
 ### Usage
-Currently this crate can't be installed via Cargo but you can build it for yourself by running this command:
+Simply install milkmilk with this command:
 ```
-  cargo build --release
+  cargo install milkmilk
 ```
 
-Then when you're done, you can simply put the executable wherever you'd like and execute the file followed by the "start" arg to bootstrap an application!
+Now all you have to do is use milkmilk like so!
+```
+  cargo mkmk start
+```
 
 Once you're done, you will probably want to do the following things before anything else:
 
